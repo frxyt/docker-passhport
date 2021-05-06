@@ -1,0 +1,72 @@
+#!/bin/bash
+
+# Copyright (c) 2021 FEROX YT EIRL, www.ferox.yt <devops@ferox.yt>
+# Copyright (c) 2021 Jérémy WALTHER <jeremy.walther@golflima.net>
+# See <https://github.com/frxyt/docker-passhport> for details.
+
+set -e;
+
+cat /etc/frx_version
+
+# Generate SSH keys of PaSSHport if needed
+mkdir -p /home/passhport/.ssh
+chmod 700 /home/passhport/.ssh
+chown passhport:passhport /home/passhport/.ssh
+su -c '[ ! -f ~/.ssh/id_rsa ] && echo "Generating PaSSHport SSH RSA key ..." && ssh-keygen -t rsa -b 4096 -N "" -f ~/.ssh/id_rsa > /dev/null' passhport
+su -c '[ ! -f ~/.ssh/id_ecdsa ] && echo "Generating PaSSHport SSH ECDSA key ..." &&  ssh-keygen -t ecdsa -b 521 -N "" -f ~/.ssh/id_ecdsa > /dev/null' passhport
+chmod 400 /home/passhport/.ssh/*
+chown passhport:passhport -R /home/passhport/.ssh
+
+# Generate SSH keys of OpenSSH-Server if needed
+if [ ! -e /etc/ssh/ssh_host_ecdsa_key -a ! -e /etc/ssh/ssh_host_ecdsa_key.pub ]; then
+    echo "Generating SSH host ECDSA key ..."
+    ssh-keygen -t ecdsa -f /etc/ssh/ssh_host_ecdsa_key -qN "" < /dev/null
+    chmod 400 /etc/ssh/ssh_host_ecdsa_key
+    chmod 444 /etc/ssh/ssh_host_ecdsa_key.pub
+fi
+if [ ! -e /etc/ssh/ssh_host_ed25519_key -a ! -e /etc/ssh/ssh_host_ed25519_key.pub ]; then
+    echo "Generating SSH host ED25519 key ..."
+    ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key -qN "" < /dev/null
+    chmod 400 /etc/ssh/ssh_host_ed25519_key
+    chmod 444 /etc/ssh/ssh_host_ed25519_key.pub
+fi
+if [ ! -e /etc/ssh/ssh_host_rsa_key -a ! -e /etc/ssh/ssh_host_rsa_key.pub ]; then
+    echo "Generating SSH host RSA key ..."
+    ssh-keygen -t rsa -b 4096 -f /etc/ssh/ssh_host_rsa_key -qN "" < /dev/null
+    chmod 400 /etc/ssh/ssh_host_rsa_key
+    chmod 444 /etc/ssh/ssh_host_rsa_key.pub
+fi
+
+# Create certificates of PaSSHport if needed
+if [ ! -f /etc/passhport/certs/cert.pem ]; then
+    if [ ! -f /etc/passhport/certs/cert.cnf ]; then
+        echo "Generating PaSSHport certicate configuration ..."
+        cp /passhport/tools/openssl-for-passhportd.cnf /etc/passhport/certs/cert.cnf
+        sed -i '/^DNS./d' /etc/passhport/certs/cert.cnf
+        echo 'DNS.1 = localhost' >> /etc/passhport/certs/cert.cnf
+    fi
+    [ ! -f /etc/passhport/certs/key.pem ] && echo "Generating PaSSHport certicate key ..." && openssl genrsa -out /etc/passhport/certs/key.pem 4096 > /dev/null 2>&1
+    echo "Generating PaSSHport certicate ..."
+    openssl req -new -key /etc/passhport/certs/key.pem \
+        -config /etc/passhport/certs/cert.cnf \
+        -out /etc/passhport/certs/cert.pem \
+        -subj "${PASSHPORT_CERT_SUBJ}" \
+        -x509 -days ${PASSHPORT_CERT_DAYS} -sha256 \
+        -extensions v3_req
+fi
+chmod 700 /etc/passhport/certs
+chmod 400 /etc/passhport/certs/*
+chown passhport:passhport -R /etc/passhport/certs
+
+# Create database of PaSSHport if needed
+su -c '[ ! -f /var/lib/passhport/app.db ] && echo "Creating PaSSHport database ..." && ~/passhport-run-env/bin/python /passhport/passhportd/db_create.py' passhport
+
+# Configure PaSSHport
+echo "Configuring PaSSHport ..."
+sed -ie "s/PASSHPORTD_HOSTNAME\s*=.*/PASSHPORTD_HOSTNAME = ${PASSHPORTD_HOSTNAME}/" /etc/passhport/passhport-admin.ini
+sed -ie "s/PASSHPORTD_HOSTNAME\s*=.*/PASSHPORTD_HOSTNAME = ${PASSHPORTD_HOSTNAME}/" /etc/passhport/passhport.ini
+
+# Start supervisor
+echo "Starting PaSSHport ..."
+mkdir -p /run/sshd /var/log/supervisor
+/usr/bin/supervisord -c /etc/supervisor/supervisord.conf

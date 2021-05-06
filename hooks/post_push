@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Copyright (c) 2021 FEROX YT EIRL, www.ferox.yt <devops@ferox.yt>
+# Copyright (c) 2021 Jérémy WALTHER <jeremy.walther@golflima.net>
+# See <https://github.com/frxyt/docker-passhport> for details.
+
+set -ex;
+
+declare -i docker_build_count=0
+
+while read -r PASSHPORT_VERSION; do
+    docker tag ${DOCKER_REPO}:${PASSHPORT_VERSION} ${DOCKER_REPO}:${PASSHPORT_VERSION}-${SOURCE_BRANCH}
+    docker push ${DOCKER_REPO}:${PASSHPORT_VERSION}
+    docker push ${DOCKER_REPO}:${PASSHPORT_VERSION}-${SOURCE_BRANCH}
+    if [ ${docker_build_count} = 0 ]; then
+        docker tag ${DOCKER_REPO}:${PASSHPORT_VERSION} ${DOCKER_REPO}:latest
+        docker push ${DOCKER_REPO}:latest
+    fi
+    ((docker_build_count++))
+done < ./hooks/PASSHPORT_VERSIONS
