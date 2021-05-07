@@ -5,4 +5,4 @@
 # See <https://github.com/frxyt/docker-passhport> for details.
 
 set -e;
-[ "$1" = "/usr/local/bin/passhport-start" ] && exec "$@" || su -c "exec \"$@\"" passhport
+[ "$1" = "/usr/local/bin/frx-start" ] && exec "$@" || su -c "exec \"$@\"" passhport

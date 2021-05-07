@@ -21,7 +21,7 @@ RUN set -ex; \
     rm -f /etc/ssh/sshd_config; \
     adduser -Dh /home/passhport -s /bin/bash passhport; \
     mkdir -p /etc/passhport/certs /var/lib/passhport /var/log/passhport; \
-    chown passhport:passhport -R /etc/passhport /var/lib/passhport /var/log/passhport;
+    chown passhport:passhport -R /var/lib/passhport /var/log/passhport;
 
 # Download PaSSHport
 ARG PASSHPORT_VERSION=2.5
@@ -30,7 +30,7 @@ RUN set -ex; \
     git clone http://github.com/LibrIT/passhport.git /passhport; \
     cd /passhport; \
     [[ -n "${PASSHPORT_VERSION}" ]] && git checkout ${PASSHPORT_VERSION}; \
-    rm -rf .git; \
+    rm -rf .git*; \
     apk del git; \
     sed -ie 's,/home/passhport/passhport/,/passhport/,g' tools/passhportd.sh; \
     sed -ie 's,/home/passhport/passhport/,/passhport/,g' tools/passhport-admin.sh; \
@@ -62,7 +62,7 @@ RUN set -ex; \
 COPY bin/entrypoint                 /usr/local/bin/frx-entrypoint
 COPY bin/healthcheck                /usr/local/bin/frx-healthcheck
 COPY bin/log                        /usr/local/bin/frx-log
-COPY bin/start                      /usr/local/bin/passhport-start
+COPY bin/start                      /usr/local/bin/frx-start
 COPY etc/${PASSHPORT_VERSION}/*     /etc/passhport/
 COPY etc/sshd_config.tpl            /etc/ssh/
 COPY etc/supervisord.conf           /etc/supervisord.conf
@@ -102,4 +102,4 @@ WORKDIR /home/passhport
 EXPOSE 22 5000
 HEALTHCHECK --interval=15s --timeout=5s --start-period=1m --retries=3 CMD /usr/local/bin/frx-healthcheck
 ENTRYPOINT ["/usr/local/bin/frx-entrypoint"]
-CMD ["/usr/local/bin/passhport-start"]
+CMD ["/usr/local/bin/frx-start"]

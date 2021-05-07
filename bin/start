@@ -11,8 +11,8 @@ set -e;
 cat /etc/frx_version
 
 # Configure TZ
-echo "Configuring TZ ..."
 if [ -n "${TZ}" ]; then
+    echo "Configuring TZ ..."
     if [ -f "/usr/share/zoneinfo/${TZ}" ]; then
         cp /usr/share/zoneinfo/${TZ} /etc/localtime
         echo "${TZ}" > /etc/timezone
@@ -29,8 +29,14 @@ fi
 mkdir -p /home/passhport/.ssh
 chmod 700 /home/passhport/.ssh
 chown passhport:passhport -R /home/passhport/.ssh
-su -c '[ ! -f ~/.ssh/id_rsa ] && echo "Generating PaSSHport SSH RSA key ..." && ssh-keygen -t rsa -b 4096 -N "" -f ~/.ssh/id_rsa > /dev/null' passhport
-su -c '[ ! -f ~/.ssh/id_ecdsa ] && echo "Generating PaSSHport SSH ECDSA key ..." &&  ssh-keygen -t ecdsa -b 521 -N "" -f ~/.ssh/id_ecdsa > /dev/null' passhport
+if [ ! -f /home/passhport/.ssh/id_rsa ]; then
+    echo "Generating PaSSHport SSH RSA key ..."
+    su -c 'ssh-keygen -t rsa -b 4096 -N "" -f ~/.ssh/id_rsa > /dev/null' passhport
+fi
+if [ ! -f /home/passhport/.ssh/id_ecdsa ]; then
+    echo "Generating PaSSHport SSH ECDSA key ..."
+    su -c 'ssh-keygen -t ecdsa -b 521 -N "" -f ~/.ssh/id_ecdsa > /dev/null' passhport
+fi
 chmod 400 /home/passhport/.ssh/*
 
 # Generate SSH keys of OpenSSH-Server if needed
@@ -63,7 +69,10 @@ if [ ! -f /etc/passhport/certs/cert.pem ]; then
         sed -i '/^DNS./d' /etc/passhport/certs/cert.cnf
         echo 'DNS.1 = localhost' >> /etc/passhport/certs/cert.cnf
     fi
-    [ ! -f /etc/passhport/certs/key.pem ] && echo "Generating PaSSHport certicate key ..." && openssl genrsa -out /etc/passhport/certs/key.pem 4096 > /dev/null 2>&1
+    if [ ! -f /etc/passhport/certs/key.pem ]; then
+        echo "Generating PaSSHport certicate key ..."
+        openssl genrsa -out /etc/passhport/certs/key.pem 4096 > /dev/null 2>&1
+    fi
     echo "Generating PaSSHport certicate ..."
     openssl req -new -key /etc/passhport/certs/key.pem \
         -config /etc/passhport/certs/cert.cnf \
@@ -95,6 +104,13 @@ echo "Configuring SSHD ..."
 if [ ! -f /etc/ssh/sshd_config ]; then
     envsubst < /etc/ssh/sshd_config.tpl > /etc/ssh/sshd_config
 fi
+
+# Execute customs scripts if needed
+mkdir -p /usr/local/bin/frx-start.d
+for exe in $(find /usr/local/bin/frx-start.d -executable ! -type d | sort); do
+    echo "Executing start script : '${exe}' ..."
+	/bin/bash ${exe}
+done
 
 # Start supervisor
 echo "Starting PaSSHport ..."
