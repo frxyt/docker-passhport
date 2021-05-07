@@ -62,6 +62,7 @@ COPY bin/healthcheck                /usr/local/bin/frx-healthcheck
 COPY bin/log                        /usr/local/bin/frx-log
 COPY bin/start                      /usr/local/bin/passhport-start
 COPY etc/${PASSHPORT_VERSION}/*     /etc/passhport/
+COPY etc/sshd_config.tpl            /etc/ssh/
 COPY etc/supervisord.conf           /etc/supervisord.conf
 
 ARG SOURCE_BRANCH=master
@@ -83,7 +84,11 @@ ENV FRX_LOG_PREFIX_MAXLEN=10 \
     PASSHPORTD_NOTIF_SMTP=127.0.0.1 \
     PASSHPORTD_NOTIF_TO='root, admin@passhport' \
     PASSHPORTD_PORT=5000 \
-    PASSHPORTD_SSL=True
+    PASSHPORTD_SSL=True \
+    SSHD_LISTEN_ADDRESS=0.0.0.0 \
+    SSHD_PASSWD_AUTH=no \
+    SSHD_PORT=22 \
+    SSHD_PUBKEY_AUTH=yes
 WORKDIR /home/passhport
 EXPOSE 22 5000
 HEALTHCHECK --interval=15s --timeout=5s --start-period=1m --retries=3 CMD /usr/local/bin/frx-healthcheck

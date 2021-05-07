@@ -70,6 +70,12 @@ for tpl_file in /etc/passhport/*.tpl; do
     fi
 done
 
+# Configure SSHD
+echo "Configuring SSHD ..."
+if [ ! -f /etc/ssh/sshd_config ]; then
+    envsubst < /etc/ssh/sshd_config.tpl > /etc/ssh/sshd_config
+fi
+
 # Start supervisor
 echo "Starting PaSSHport ..."
 mkdir -p /run/sshd /var/log/supervisor
