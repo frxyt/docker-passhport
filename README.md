@@ -38,6 +38,7 @@ These environment variables can be overriden to change the default behavior of t
 | `PASSHPORTD_DB_SESSIONS_TO`     | `12`                            | `10`                            | PaSSHport database sessions default timeout in hours
 | `PASSHPORTD_HOSTNAME`           | `localhost`                     | `bastion.frx.yt`                | PaSSHport hostname
 | `PASSHPORTD_KEEPCONNECT`        | `True`                          | `True` / `False`                | Relaunch PaSSHport once a session is over
+| `PASSHPORTD_LISTENING_IP`       | `0.0.0.0`                       | `192.168.1.10`                  | passhportd listening IP
 | `PASSHPORTD_MAXLOGSIZE`         | `5`                             | `10`                            | PaSSHport maximum log file size in MB
 | `PASSHPORTD_NODE_NAME`          | `passhport-node`                | `passhport`                     | Relaunch Node Name in case of HA
 | `PASSHPORTD_NOFIT_FROM`         | `passhport@bastion`             | `passhport@bastion.frx.yt`      | E-mail address sending PaSSHport notifications

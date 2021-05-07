@@ -17,7 +17,8 @@ RUN set -ex; \
         perl \
         python3 \
         supervisor \
-        tzdata; \
+        tzdata \
+        wget; \
     rm -f /etc/ssh/sshd_config; \
     adduser -Dh /home/passhport -s /bin/bash passhport; \
     mkdir -p /etc/passhport/certs /var/lib/passhport /var/log/passhport; \
@@ -32,6 +33,7 @@ RUN set -ex; \
     [[ -n "${PASSHPORT_VERSION}" ]] && git checkout ${PASSHPORT_VERSION}; \
     rm -rf .git*; \
     apk del git; \
+    sed -ie 's,${PASSHHOMEDIR}/passhport/,/,g' passhport/passhport-connect.sh; \
     sed -ie 's,/home/passhport/passhport/,/passhport/,g' tools/passhportd.sh; \
     sed -ie 's,/home/passhport/passhport/,/passhport/,g' tools/passhport-admin.sh; \
     ln -s /passhport/tools/passhportd.sh /usr/local/bin/passhportd; \
@@ -81,6 +83,7 @@ ENV FRX_DEBUG=0 \
     PASSHPORTD_DB_SESSIONS_TO=12 \
     PASSHPORTD_HOSTNAME=localhost \
     PASSHPORTD_KEEPCONNECT=True \
+    PASSHPORTD_LISTENING_IP=0.0.0.0 \
     PASSHPORTD_MAXLOGSIZE=5 \
     PASSHPORTD_NODE_NAME=passhport-node \
     PASSHPORTD_NOFIT_FROM=passhport@bastion \

@@ -7,7 +7,7 @@ SSL_KEY        = /etc/passhport/certs/key.pem
 
 
 [Network]
-LISTENING_IP   = ${PASSHPORTD_HOSTNAME}
+LISTENING_IP   = ${PASSHPORTD_LISTENING_IP}
 PORT = ${PASSHPORTD_PORT}
 
 
