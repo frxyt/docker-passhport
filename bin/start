@@ -63,8 +63,12 @@ su -c '[ ! -f /var/lib/passhport/app.db ] && echo "Creating PaSSHport database .
 
 # Configure PaSSHport
 echo "Configuring PaSSHport ..."
-sed -ie "s/PASSHPORTD_HOSTNAME\s*=.*/PASSHPORTD_HOSTNAME = ${PASSHPORTD_HOSTNAME}/" /etc/passhport/passhport-admin.ini
-sed -ie "s/PASSHPORTD_HOSTNAME\s*=.*/PASSHPORTD_HOSTNAME = ${PASSHPORTD_HOSTNAME}/" /etc/passhport/passhport.ini
+for tpl_file in /etc/passhport/*.tpl; do
+    conf_file=${tpl_file%.tpl}
+    if [ ! -f ${conf_file} ]; then
+        envsubst < ${tpl_file} > ${conf_file}
+    fi
+done
 
 # Start supervisor
 echo "Starting PaSSHport ..."

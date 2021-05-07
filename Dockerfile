@@ -11,6 +11,7 @@ RUN set -ex; \
     apk add --no-cache \
         bash \
         curl \
+        gettext \
         openssl \
         openssh-server \
         perl \
@@ -20,7 +21,7 @@ RUN set -ex; \
     mkdir -p /etc/passhport/certs /var/lib/passhport /var/log/passhport; \
     chown passhport:passhport -R /etc/passhport /var/lib/passhport /var/log/passhport;
 
-# Download PaSSHport and copy configuration files
+# Download PaSSHport
 ARG PASSHPORT_VERSION=2.5
 RUN set -ex; \
     apk add --no-cache git; \
@@ -29,18 +30,6 @@ RUN set -ex; \
     [[ -n "${PASSHPORT_VERSION}" ]] && git checkout ${PASSHPORT_VERSION}; \
     rm -rf .git; \
     apk del git; \
-    sed -e 's,/home/passhport/certs/,/etc/passhport/certs/,g' \
-        -e 's,/home/passhport/passhport/,/passhport/passhport/,g' \
-        -i passhport/passhport.ini; \
-    sed -e 's,/home/passhport/certs/,/etc/passhport/certs/,g' \
-        -i passhport-admin/passhport-admin.ini; \
-    sed -e 's,/home/passhport/certs/,/etc/passhport/certs/,g' \
-        -e 's,/home/passhport/passhport/,/passhport/passhport/,g' \
-        -e 's,/home/passhport/var,/var/lib/passhport,g' \
-        -i passhportd/passhportd.ini; \
-    cp passhport/passhport.ini /etc/passhport/; \
-    cp passhport-admin/passhport-admin.ini /etc/passhport/; \
-    cp passhportd/passhportd.ini /etc/passhport/; \
     sed -ie 's,/home/passhport/passhport/,/passhport/,g' tools/passhportd.sh; \
     sed -ie 's,/home/passhport/passhport/,/passhport/,g' tools/passhport-admin.sh; \
     ln -s /passhport/tools/passhportd.sh /usr/local/bin/passhportd; \
@@ -68,11 +57,12 @@ RUN set -ex; \
         py3-pip \
         openssl-dev;
 
-COPY bin/entrypoint         /usr/local/bin/frx-entrypoint
-COPY bin/healthcheck        /usr/local/bin/frx-healthcheck
-COPY bin/log                /usr/local/bin/frx-log
-COPY bin/start              /usr/local/bin/passhport-start
-COPY etc/supervisord.conf   /etc/supervisord.conf
+COPY bin/entrypoint                 /usr/local/bin/frx-entrypoint
+COPY bin/healthcheck                /usr/local/bin/frx-healthcheck
+COPY bin/log                        /usr/local/bin/frx-log
+COPY bin/start                      /usr/local/bin/passhport-start
+COPY etc/${PASSHPORT_VERSION}/*     /etc/passhport/
+COPY etc/supervisord.conf           /etc/supervisord.conf
 
 ARG SOURCE_BRANCH=master
 ARG SOURCE_COMMIT=HEAD
@@ -83,7 +73,17 @@ RUN set -ex; \
 ENV FRX_LOG_PREFIX_MAXLEN=10 \
     PASSHPORT_CERT_DAYS=3650 \
     PASSHPORT_CERT_SUBJ='/C=FX/ST=None/L=None/O=None/OU=None/CN=localhost' \
-    PASSHPORTD_HOSTNAME=localhost
+    PASSHPORTD_DB_SALT=thepasshportsafeandsecuresalt \
+    PASSHPORTD_DB_SESSIONS_TO=12 \
+    PASSHPORTD_HOSTNAME=localhost \
+    PASSHPORTD_MAXLOGSIZE=5 \
+    PASSHPORTD_NODE_NAME=passhport-node \
+    PASSHPORTD_NOFIT_FROM=passhport@bastion \
+    PASSHPORTD_NOTIF_LOG_TYPE=email \
+    PASSHPORTD_NOTIF_SMTP=127.0.0.1 \
+    PASSHPORTD_NOTIF_TO='root, admin@passhport' \
+    PASSHPORTD_PORT=5000 \
+    PASSHPORTD_SSL=True
 WORKDIR /home/passhport
 EXPOSE 22 5000
 HEALTHCHECK --interval=15s --timeout=5s --start-period=1m --retries=3 CMD /usr/local/bin/frx-healthcheck
