@@ -16,5 +16,5 @@ while read -r PASSHPORT_VERSION; do
         docker tag ${DOCKER_REPO}:${PASSHPORT_VERSION} ${DOCKER_REPO}:latest
         docker push ${DOCKER_REPO}:latest
     fi
-    $((docker_build_count++))
+    let docker_build_count++
 done < ./hooks/PASSHPORT_VERSIONS
