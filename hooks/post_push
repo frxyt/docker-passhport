@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Copyright (c) 2021 FEROX YT EIRL, www.ferox.yt <devops@ferox.yt>
 # Copyright (c) 2021 Jérémy WALTHER <jeremy.walther@golflima.net>
@@ -6,15 +6,15 @@
 
 set -ex;
 
-declare -i docker_build_count=0
+docker_build_latest=yes
 
 while read -r PASSHPORT_VERSION; do
     docker tag ${DOCKER_REPO}:${PASSHPORT_VERSION} ${DOCKER_REPO}:${PASSHPORT_VERSION}-${SOURCE_BRANCH}
     docker push ${DOCKER_REPO}:${PASSHPORT_VERSION}
     docker push ${DOCKER_REPO}:${PASSHPORT_VERSION}-${SOURCE_BRANCH}
-    if [ ${docker_build_count} = 0 ]; then
+    if [ "${docker_build_latest}" = yes ]; then
+        docker_build_latest=no
         docker tag ${DOCKER_REPO}:${PASSHPORT_VERSION} ${DOCKER_REPO}:latest
         docker push ${DOCKER_REPO}:latest
     fi
-    let docker_build_count++
 done < ./hooks/PASSHPORT_VERSIONS
