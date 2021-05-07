@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# Copyright (c) 2021 FEROX YT EIRL, www.ferox.yt <devops@ferox.yt>
+# Copyright (c) 2021 Jérémy WALTHER <jeremy.walther@golflima.net>
+# See <https://github.com/frxyt/docker-passhport> for details.
+
+set -e;
+
+for process in passhportd sshd; do
+    /usr/bin/supervisorctl status | grep ${process} | grep -q RUNNING || exit 1;
+done
+
+exit 0;

@@ -69,9 +69,10 @@ RUN set -ex; \
         openssl-dev;
 
 COPY bin/entrypoint         /usr/local/bin/frx-entrypoint
+COPY bin/healthcheck        /usr/local/bin/frx-healthcheck
 COPY bin/log                /usr/local/bin/frx-log
 COPY bin/start              /usr/local/bin/passhport-start
-COPY etc/supervisord.conf   /etc/supervisor/supervisord.conf
+COPY etc/supervisord.conf   /etc/supervisord.conf
 
 ARG SOURCE_BRANCH=master
 ARG SOURCE_COMMIT=HEAD
@@ -85,6 +86,6 @@ ENV FRX_LOG_PREFIX_MAXLEN=10 \
     PASSHPORTD_HOSTNAME=localhost
 WORKDIR /home/passhport
 EXPOSE 22 5000
-HEALTHCHECK --interval=1m --timeout=5s --start-period=1m --retries=3 CMD curl -f --insecure https://127.0.0.1:5000 || exit 1
+HEALTHCHECK --interval=15s --timeout=5s --start-period=1m --retries=3 CMD /usr/local/bin/frx-healthcheck
 ENTRYPOINT ["/usr/local/bin/frx-entrypoint"]
 CMD ["/usr/local/bin/passhport-start"]

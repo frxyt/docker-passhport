@@ -69,4 +69,4 @@ sed -ie "s/PASSHPORTD_HOSTNAME\s*=.*/PASSHPORTD_HOSTNAME = ${PASSHPORTD_HOSTNAME
 # Start supervisor
 echo "Starting PaSSHport ..."
 mkdir -p /run/sshd /var/log/supervisor
-/usr/bin/supervisord -c /etc/supervisor/supervisord.conf
+/usr/bin/supervisord -c /etc/supervisord.conf
