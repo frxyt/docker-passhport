@@ -4,5 +4,4 @@
 # Copyright (c) 2021 Jérémy WALTHER <jeremy.walther@golflima.net>
 # See <https://github.com/frxyt/docker-passhport> for details.
 
-set -e;
 [ "$1" = "/usr/local/bin/frx-start" ] && exec "$@" || su -c "exec \"$@\"" passhport

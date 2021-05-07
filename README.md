@@ -22,7 +22,7 @@ This image packages PaSSHport !
 1. Clone the project: `git clone https://github.com/frxyt/docker-passhport.git`, then `cd docker-passhport`
 1. Start it: `docker-compose up -d --build`
 1. Read the admin doc: <https://docs.passhport.org/en/latest/getting-started.html>
-1. Configure it: `docker-compose exec passhport bash`
+1. Configure it: `docker-compose exec -u passhport passhport bash`
 1. Connect to your servers: `ssh user@127.0.0.1 -p 22`
 
 ### Configurable environment variables
@@ -59,7 +59,7 @@ These environment variables can be overriden to change the default behavior of t
 ```sh
 docker build -f Dockerfile -t frxyt/passhport:latest .
 docker run --rm -d --name  frxyt/passhport:latest
-docker exec -it passhport bash
+docker exec -itu passhport passhport bash
 docker stop passhport
 ```
 

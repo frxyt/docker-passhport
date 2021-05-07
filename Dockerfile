@@ -103,6 +103,6 @@ COPY README.md      /frx/
 
 WORKDIR /home/passhport
 EXPOSE 22 5000
-HEALTHCHECK --interval=15s --timeout=5s --start-period=1m --retries=3 CMD /usr/local/bin/frx-healthcheck
+HEALTHCHECK --interval=15s --timeout=5s --start-period=1m --retries=3 CMD ["/usr/local/bin/frx-healthcheck"]
 ENTRYPOINT ["/usr/local/bin/frx-entrypoint"]
 CMD ["/usr/local/bin/frx-start"]

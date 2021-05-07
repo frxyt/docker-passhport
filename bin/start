@@ -88,7 +88,10 @@ chown passhport:passhport -R /etc/passhport/certs
 # Create database of PaSSHport if needed
 mkdir -p /var/lib/passhport
 chown passhport:passhport -R /var/lib/passhport
-su -c '[ ! -f /var/lib/passhport/app.db ] && echo "Creating PaSSHport database ..." && ~/passhport-run-env/bin/python /passhport/passhportd/db_create.py' passhport
+if [ ! -f /var/lib/passhport/app.db ]; then 
+    echo "Creating PaSSHport database ..." 
+    su -c '~/passhport-run-env/bin/python /passhport/passhportd/db_create.py' passhport
+fi
 
 # Configure PaSSHport
 echo "Configuring PaSSHport ..."

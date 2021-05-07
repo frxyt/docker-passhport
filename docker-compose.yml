@@ -1,11 +1,12 @@
 version: '2.4'
 
 services:
-  passhport: 
+  passhport:
     image: frxyt/passhport:latest
-    build: 
+    build:
       context: .
-    environment: 
+    container_name: passhport
+    environment:
       - TZ=Europe/Paris
     ports:
       - 127.0.0.1:22:22
