@@ -16,7 +16,9 @@ RUN set -ex; \
         openssh-server \
         perl \
         python3 \
-        supervisor; \
+        supervisor \
+        tzdata; \
+    rm -f /etc/ssh/sshd_config; \
     adduser -Dh /home/passhport -s /bin/bash passhport; \
     mkdir -p /etc/passhport/certs /var/lib/passhport /var/log/passhport; \
     chown passhport:passhport -R /etc/passhport /var/lib/passhport /var/log/passhport;
@@ -71,7 +73,8 @@ RUN set -ex; \
     echo "[frxyt/passhport:${PASSHPORT_VERSION}-${SOURCE_BRANCH}] <https://github.com/frxyt/docker-passhport>" > /etc/frx_version; \
     echo "[version: ${SOURCE_BRANCH}@${SOURCE_COMMIT}]" >> /etc/frx_version
 
-ENV FRX_LOG_PREFIX_MAXLEN=10 \
+ENV FRX_DEBUG=0 \
+    FRX_LOG_PREFIX_MAXLEN=10 \
     PASSHPORT_CERT_DAYS=3650 \
     PASSHPORT_CERT_SUBJ='/C=FX/ST=None/L=None/O=None/OU=None/CN=localhost' \
     PASSHPORTD_DB_SALT=thepasshportsafeandsecuresalt \
@@ -88,7 +91,13 @@ ENV FRX_LOG_PREFIX_MAXLEN=10 \
     SSHD_LISTEN_ADDRESS=0.0.0.0 \
     SSHD_PASSWD_AUTH=no \
     SSHD_PORT=22 \
-    SSHD_PUBKEY_AUTH=yes
+    SSHD_PUBKEY_AUTH=yes \
+    TZ=Etc/UTC
+
+COPY Dockerfile     /frx/
+COPY LICENSE        /frx/
+COPY README.md      /frx/
+
 WORKDIR /home/passhport
 EXPOSE 22 5000
 HEALTHCHECK --interval=15s --timeout=5s --start-period=1m --retries=3 CMD /usr/local/bin/frx-healthcheck

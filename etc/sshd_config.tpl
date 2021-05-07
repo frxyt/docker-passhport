@@ -14,9 +14,9 @@ Port ${SSHD_PORT}
 AddressFamily inet
 ListenAddress ${SSHD_LISTEN_ADDRESS}
 
-HostKey /etc/ssh/ssh_host_rsa_key
-HostKey /etc/ssh/ssh_host_ecdsa_key
-HostKey /etc/ssh/ssh_host_ed25519_key
+HostKey /etc/ssh/keys/ssh_host_rsa_key
+HostKey /etc/ssh/keys/ssh_host_ecdsa_key
+HostKey /etc/ssh/keys/ssh_host_ed25519_key
 
 # Ciphers and keying
 #RekeyLimit default none

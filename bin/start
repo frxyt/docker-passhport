@@ -5,39 +5,57 @@
 # See <https://github.com/frxyt/docker-passhport> for details.
 
 set -e;
+[ "${FRX_DEBUG}" = 1 ] && set -x;
 
+# Print image version
 cat /etc/frx_version
+
+# Configure TZ
+echo "Configuring TZ ..."
+if [ -n "${TZ}" ]; then
+    if [ -f "/usr/share/zoneinfo/${TZ}" ]; then
+        cp /usr/share/zoneinfo/${TZ} /etc/localtime
+        echo "${TZ}" > /etc/timezone
+        date
+    else
+        echo "Error: ${TZ} is not a valid TZ data!"
+        echo "Available TZ data:"
+        ls -1 /usr/share/zoneinfo
+        exit 1;
+    fi
+fi
 
 # Generate SSH keys of PaSSHport if needed
 mkdir -p /home/passhport/.ssh
 chmod 700 /home/passhport/.ssh
-chown passhport:passhport /home/passhport/.ssh
+chown passhport:passhport -R /home/passhport/.ssh
 su -c '[ ! -f ~/.ssh/id_rsa ] && echo "Generating PaSSHport SSH RSA key ..." && ssh-keygen -t rsa -b 4096 -N "" -f ~/.ssh/id_rsa > /dev/null' passhport
 su -c '[ ! -f ~/.ssh/id_ecdsa ] && echo "Generating PaSSHport SSH ECDSA key ..." &&  ssh-keygen -t ecdsa -b 521 -N "" -f ~/.ssh/id_ecdsa > /dev/null' passhport
 chmod 400 /home/passhport/.ssh/*
-chown passhport:passhport -R /home/passhport/.ssh
 
 # Generate SSH keys of OpenSSH-Server if needed
-if [ ! -e /etc/ssh/ssh_host_ecdsa_key -a ! -e /etc/ssh/ssh_host_ecdsa_key.pub ]; then
+mkdir -p /etc/ssh/keys
+if [ ! -e /etc/ssh/keys/ssh_host_ecdsa_key -a ! -e /etc/ssh/keys/ssh_host_ecdsa_key.pub ]; then
     echo "Generating SSH host ECDSA key ..."
-    ssh-keygen -t ecdsa -f /etc/ssh/ssh_host_ecdsa_key -qN "" < /dev/null
-    chmod 400 /etc/ssh/ssh_host_ecdsa_key
-    chmod 444 /etc/ssh/ssh_host_ecdsa_key.pub
+    ssh-keygen -t ecdsa -f /etc/ssh/keys/ssh_host_ecdsa_key -qN "" < /dev/null
+    chmod 400 /etc/ssh/keys/ssh_host_ecdsa_key
+    chmod 444 /etc/ssh/keys/ssh_host_ecdsa_key.pub
 fi
-if [ ! -e /etc/ssh/ssh_host_ed25519_key -a ! -e /etc/ssh/ssh_host_ed25519_key.pub ]; then
+if [ ! -e /etc/ssh/keys/ssh_host_ed25519_key -a ! -e /etc/ssh/keys/ssh_host_ed25519_key.pub ]; then
     echo "Generating SSH host ED25519 key ..."
-    ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key -qN "" < /dev/null
-    chmod 400 /etc/ssh/ssh_host_ed25519_key
-    chmod 444 /etc/ssh/ssh_host_ed25519_key.pub
+    ssh-keygen -t ed25519 -f /etc/ssh/keys/ssh_host_ed25519_key -qN "" < /dev/null
+    chmod 400 /etc/ssh/keys/ssh_host_ed25519_key
+    chmod 444 /etc/ssh/keys/ssh_host_ed25519_key.pub
 fi
-if [ ! -e /etc/ssh/ssh_host_rsa_key -a ! -e /etc/ssh/ssh_host_rsa_key.pub ]; then
+if [ ! -e /etc/ssh/keys/ssh_host_rsa_key -a ! -e /etc/ssh/keys/ssh_host_rsa_key.pub ]; then
     echo "Generating SSH host RSA key ..."
-    ssh-keygen -t rsa -b 4096 -f /etc/ssh/ssh_host_rsa_key -qN "" < /dev/null
-    chmod 400 /etc/ssh/ssh_host_rsa_key
-    chmod 444 /etc/ssh/ssh_host_rsa_key.pub
+    ssh-keygen -t rsa -b 4096 -f /etc/ssh/keys/ssh_host_rsa_key -qN "" < /dev/null
+    chmod 400 /etc/ssh/keys/ssh_host_rsa_key
+    chmod 444 /etc/ssh/keys/ssh_host_rsa_key.pub
 fi
 
 # Create certificates of PaSSHport if needed
+mkdir -p /etc/passhport/certs
 if [ ! -f /etc/passhport/certs/cert.pem ]; then
     if [ ! -f /etc/passhport/certs/cert.cnf ]; then
         echo "Generating PaSSHport certicate configuration ..."
@@ -59,6 +77,8 @@ chmod 400 /etc/passhport/certs/*
 chown passhport:passhport -R /etc/passhport/certs
 
 # Create database of PaSSHport if needed
+mkdir -p /var/lib/passhport
+chown passhport:passhport -R /var/lib/passhport
 su -c '[ ! -f /var/lib/passhport/app.db ] && echo "Creating PaSSHport database ..." && ~/passhport-run-env/bin/python /passhport/passhportd/db_create.py' passhport
 
 # Configure PaSSHport
@@ -78,5 +98,6 @@ fi
 
 # Start supervisor
 echo "Starting PaSSHport ..."
-mkdir -p /run/sshd /var/log/supervisor
+mkdir -p /run/sshd /var/log/supervisor /var/log/passhport
+chown passhport:passhport -R /var/log/passhport
 /usr/bin/supervisord -c /etc/supervisord.conf
