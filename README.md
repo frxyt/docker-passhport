@@ -19,7 +19,9 @@ This image packages PaSSHport !
 
 ```sh
 docker build -f Dockerfile -t frxyt/passhport:latest .
-docker run --rm -it frxyt/passhport:latest bash
+docker run --rm -d --name  frxyt/passhport:latest
+docker exec -it passhport bash
+docker stop passhport
 ```
 
 ## License

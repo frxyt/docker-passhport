@@ -7,6 +7,7 @@
 set -ex;
 
 ALPINE_VERSION=alpine:3.13
+docker_build_latest=yes
 
 while read -r PASSHPORT_VERSION; do
     docker build \
@@ -15,4 +16,8 @@ while read -r PASSHPORT_VERSION; do
         --build-arg SOURCE_BRANCH=${SOURCE_BRANCH} \
         --build-arg SOURCE_COMMIT=${SOURCE_COMMIT} \
         -f ${DOCKERFILE_PATH} -t ${DOCKER_REPO}:${PASSHPORT_VERSION} .
+    if [ "${docker_build_latest}" = yes ]; then
+        docker_build_latest=no
+        docker tag ${DOCKER_REPO}:${PASSHPORT_VERSION} ${DOCKER_REPO}:latest
+    fi
 done < ./hooks/PASSHPORT_VERSIONS
