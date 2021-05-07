@@ -6,7 +6,7 @@
 
 set -ex;
 
-declare -r ALPINE_VERSION=alpine:3.13
+ALPINE_VERSION=alpine:3.13
 
 while read -r PASSHPORT_VERSION; do
     docker build \
