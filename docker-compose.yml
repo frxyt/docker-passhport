@@ -1,0 +1,18 @@
+version: '2.4'
+
+services:
+  passhport: 
+    image: frxyt/passhport:latest
+    build: 
+      context: .
+    environment: 
+      - TZ=Europe/Paris
+    ports:
+      - 127.0.0.1:22:22
+      - 127.0.0.1:5000:5000
+    volumes:
+      - ./var/lib/.ssh:/home/passhport/.ssh:rw
+      - ./var/lib/certs:/etc/passhport/certs:rw
+      - ./var/lib/db:/var/lib/passhport:rw
+      - ./var/lib/keys:/etc/ssh/keys:rw
+      - ./var/log:/var/log/passhport:rw
