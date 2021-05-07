@@ -16,5 +16,5 @@ while read -r PASSHPORT_VERSION; do
         --build-arg SOURCE_BRANCH=${SOURCE_BRANCH} \
         --build-arg SOURCE_COMMIT=${SOURCE_COMMIT} \
         -f ${DOCKERFILE_PATH} -t ${DOCKER_REPO}:${PASSHPORT_VERSION} .
-    ((docker_build_count++))
+    $((docker_build_count++))
 done < ./hooks/PASSHPORT_VERSIONS
