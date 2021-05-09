@@ -36,7 +36,7 @@ LDAP_PASS               = thepasshportaccountsecuredpassword
 # SSH Keyfile path
 SSH_KEY_FILE     = /home/passhport/.ssh/authorized_keys
 # Python and passhport paths
-PASSHPORT_PATH   = /passhport/passhport/passhport
+PASSHPORT_PATH   = /home/passhport/passhport/passhport/passhport
 PYTHON_PATH      = /home/passhport/passhport-run-env/bin/python3
 #External access (optional - commercial use)
 OPEN_ACCESS_PATH = /home/passhport/passhwall.sh

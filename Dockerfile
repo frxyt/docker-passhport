@@ -28,20 +28,17 @@ RUN set -ex; \
 ARG PASSHPORT_VERSION=2.5
 RUN set -ex; \
     apk add --no-cache git; \
-    git clone http://github.com/LibrIT/passhport.git /passhport; \
-    cd /passhport; \
+    git clone http://github.com/LibrIT/passhport.git /home/passhport/passhport; \
+    cd /home/passhport/passhport; \
     [[ -n "${PASSHPORT_VERSION}" ]] && git checkout ${PASSHPORT_VERSION}; \
     rm -rf .git*; \
     apk del git; \
-    sed -ie 's,${PASSHHOMEDIR}/passhport/,/,g' passhport/passhport-connect.sh; \
-    sed -ie 's,/home/passhport/passhport/,/passhport/,g' tools/passhportd.sh; \
-    sed -ie 's,/home/passhport/passhport/,/passhport/,g' tools/passhport-admin.sh; \
-    ln -s /passhport/tools/passhportd.sh /usr/local/bin/passhportd; \
-    ln -s /passhport/tools/passhport-admin.sh /usr/local/bin/passhport-admin;
+    ln -s /home/passhport/passhport/tools/passhportd.sh /usr/local/bin/passhportd; \
+    ln -s /home/passhport/passhport/tools/passhport-admin.sh /usr/local/bin/passhport-admin;
 
 # Install required PaSSHport dependancies
 RUN set -ex; \
-    cd  /passhport; \
+    cd  /home/passhport/passhport; \
     apk add --no-cache \
         python3-dev \
         py3-pip; \

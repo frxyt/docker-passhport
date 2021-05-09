@@ -15,7 +15,7 @@ PORT = ${PASSHPORTD_PORT}
 [Environment]
 # Logs
 SCRIPT_LOGS_PATH = /var/log/passhport
-SSH_SCRIPT       = /passhport/passhport/passhport-connect.sh
+SSH_SCRIPT       = /home/passhport/passhport/passhport/passhport-connect.sh
 
 
 [MISC]
