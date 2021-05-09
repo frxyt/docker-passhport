@@ -97,9 +97,9 @@ ENV FRX_DEBUG=0 \
     SSHD_PUBKEY_AUTH=yes \
     TZ=Etc/UTC
 
-COPY Dockerfile     /frx/
-COPY LICENSE        /frx/
-COPY README.md      /frx/
+COPY Dockerfile     /home/passhport/
+COPY LICENSE        /home/passhport/
+COPY README.md      /home/passhport/
 
 WORKDIR /home/passhport
 EXPOSE 22 5000
