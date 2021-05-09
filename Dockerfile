@@ -18,6 +18,7 @@ RUN set -ex; \
         python3 \
         supervisor \
         tzdata \
+        util-linux \
         wget; \
     rm -f /etc/ssh/sshd_config; \
     adduser -Dh /home/passhport -s /bin/bash passhport; \
