@@ -18,6 +18,6 @@ while read -r PASSHPORT_VERSION; do
         -f ${DOCKERFILE_PATH} -t ${DOCKER_REPO}:${PASSHPORT_VERSION} .
     if [ "${docker_build_latest}" = yes ]; then
         docker_build_latest=no
-        docker tag ${DOCKER_REPO}:${PASSHPORT_VERSION} ${DOCKER_REPO}:latest
+        docker tag ${DOCKER_REPO}:${PASSHPORT_VERSION}-${SOURCE_BRANCH} ${DOCKER_REPO}:latest
     fi
 done < ./hooks/PASSHPORT_VERSIONS

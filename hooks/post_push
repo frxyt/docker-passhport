@@ -7,7 +7,9 @@
 set -ex;
 
 while read -r PASSHPORT_VERSION; do
-    docker tag ${DOCKER_REPO}:${PASSHPORT_VERSION} ${DOCKER_REPO}:${PASSHPORT_VERSION}-${SOURCE_BRANCH}
-    docker push ${DOCKER_REPO}:${PASSHPORT_VERSION}
     docker push ${DOCKER_REPO}:${PASSHPORT_VERSION}-${SOURCE_BRANCH}
+    if [ "${SOURCE_BRANCH}" = "master" ]; then
+        docker tag ${DOCKER_REPO}:${PASSHPORT_VERSION}-${SOURCE_BRANCH} ${DOCKER_REPO}:${PASSHPORT_VERSION}
+        docker push ${DOCKER_REPO}:${PASSHPORT_VERSION}
+    fi
 done < ./hooks/PASSHPORT_VERSIONS
