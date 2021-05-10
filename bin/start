@@ -65,7 +65,7 @@ mkdir -p /etc/passhport/certs
 if [ ! -f /etc/passhport/certs/cert.pem ]; then
     if [ ! -f /etc/passhport/certs/cert.cnf ]; then
         echo "Generating PaSSHport certicate configuration ..."
-        cp /passhport/tools/openssl-for-passhportd.cnf /etc/passhport/certs/cert.cnf
+        cp /home/passhport/passhport/tools/openssl-for-passhportd.cnf /etc/passhport/certs/cert.cnf
         sed -i '/^DNS./d' /etc/passhport/certs/cert.cnf
         echo 'DNS.1 = localhost' >> /etc/passhport/certs/cert.cnf
     fi
@@ -90,7 +90,7 @@ mkdir -p /var/lib/passhport
 chown passhport:passhport -R /var/lib/passhport
 if [ ! -f /var/lib/passhport/app.db ]; then 
     echo "Creating PaSSHport database ..." 
-    su -c '~/passhport-run-env/bin/python /passhport/passhportd/db_create.py' passhport
+    su -c '~/passhport-run-env/bin/python ~/passhport/passhportd/db_create.py' passhport
 fi
 
 # Configure PaSSHport
