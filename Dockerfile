@@ -22,6 +22,7 @@ RUN set -ex; \
         wget; \
     rm -f /etc/ssh/sshd_config; \
     adduser -Dh /home/passhport -s /bin/bash passhport; \
+    passwd -du passhport; \
     mkdir -p /etc/passhport/certs /var/lib/passhport /var/log/passhport; \
     chown passhport:passhport -R /var/lib/passhport /var/log/passhport;
 
@@ -39,7 +40,7 @@ RUN set -ex; \
 
 # Install required PaSSHport dependancies
 RUN set -ex; \
-    cd  /home/passhport/passhport; \
+    cd /home/passhport/passhport; \
     apk add --no-cache \
         python3-dev \
         py3-pip; \
@@ -51,6 +52,8 @@ RUN set -ex; \
         libffi-dev \
         openssl-dev; \
     su -c '~/passhport-run-env/bin/pip install -r requirements.txt' passhport; \
+    cd /home/passhport; \
+    rm -rf .cache .local; \
     apk del \
         gcc \
         libc-dev \
