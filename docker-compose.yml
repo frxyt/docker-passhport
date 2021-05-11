@@ -8,12 +8,20 @@ services:
     container_name: passhport
     environment:
       - TZ=Europe/Paris
+    hostname: passhport
     ports:
       - 127.0.0.1:22:22
       - 127.0.0.1:5000:5000
     volumes:
-      - ./var/lib/.ssh:/home/passhport/.ssh:rw
-      - ./var/lib/certs:/etc/passhport/certs:rw
-      - ./var/lib/db:/var/lib/passhport:rw
-      - ./var/lib/keys:/etc/ssh/keys:rw
-      - ./var/log:/var/log/passhport:rw
+      - passhport_certs:/etc/passhport/certs:rw
+      - passhport_db:/var/lib/passhport:rw
+      - passhport_keys:/etc/ssh/keys:rw
+      - passhport_log:/var/log/passhport:rw
+      - passhport_ssh:/home/passhport/.ssh:rw
+
+volumes:
+  passhport_certs:
+  passhport_db:
+  passhport_keys:
+  passhport_log:
+  passhport_ssh:

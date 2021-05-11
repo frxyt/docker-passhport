@@ -6,7 +6,7 @@
 ![GitHub issues](https://img.shields.io/github/issues/frxyt/docker-passhport.svg)
 ![GitHub last commit](https://img.shields.io/github/last-commit/frxyt/docker-passhport.svg)
 
-This image packages PaSSHport !
+This image packages PaSSHport, a bastion host capable of proxying SSH connections. It allows sysadmins to log what happen on SSH and centralize the users and servers access.
 
 * Docker Hub: <https://hub.docker.com/r/frxyt/passhport>
 * GitHub: <https://github.com/frxyt/docker-passhport>
@@ -23,7 +23,15 @@ This image packages PaSSHport !
 1. Start it: `docker-compose up -d --build`
 1. Read the admin doc: <https://docs.passhport.org/en/latest/getting-started.html>
 1. Configure it: `docker-compose exec -u passhport passhport bash`
-1. Connect to your servers: `ssh user@127.0.0.1 -p 22`
+    1. Create your first user group: `passhport-admin usergroup create`
+    1. Create your first user: `passhport-admin user create`
+    1. Add your user to the user group: `passhport-admin usergroup adduser`
+    1. Create your first target (server) group: `passhport-admin targetgroup create`
+    1. Assign the user group to the target group: `passhport-admin targetgroup addusergroup`
+    1. Create your first target: `passhport-admin target create`
+    1. Add your target to the target group: `passhport-admin targetgroup addtarget`
+1. Connect to your target using PaSSHport: `ssh passhport@127.0.0.1 -p 22`
+1. Clean it: `docker-compose down --volumes`
 
 ### Configurable environment variables
 
@@ -63,6 +71,16 @@ docker run --rm -d --name  frxyt/passhport:latest
 docker exec -itu passhport passhport bash
 docker stop passhport
 ```
+
+## Troubleshooting
+
+### passhport-admin tells the database doesn't exist
+
+Solution: Restart the passhport container.
+
+### Error `passhport@xxx: Permission denied (publickey,keyboard-interactive).` while connecting to ssh and this error is displayed in passhport logs `sshd       | Authentication refused: bad ownership or modes for file /home/passhport/.ssh/authorized_keys`
+
+Solution: Don't mount `/home/passhport/.ssh` folder on a Windows host filesystem directly. Use WSL2 or a named volume instead.
 
 ## License
 

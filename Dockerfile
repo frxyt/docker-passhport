@@ -13,6 +13,7 @@ RUN set -ex; \
         curl \
         gettext \
         openssl \
+        openssh-client \
         openssh-server \
         perl \
         python3 \

@@ -18,6 +18,8 @@ HostKey /etc/ssh/keys/ssh_host_rsa_key
 HostKey /etc/ssh/keys/ssh_host_ecdsa_key
 HostKey /etc/ssh/keys/ssh_host_ed25519_key
 
+AllowUsers passhport
+
 # Ciphers and keying
 #RekeyLimit default none
 
