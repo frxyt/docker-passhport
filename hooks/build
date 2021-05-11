@@ -15,7 +15,7 @@ while read -r PASSHPORT_VERSION; do
         --build-arg PASSHPORT_VERSION=${PASSHPORT_VERSION} \
         --build-arg SOURCE_BRANCH=${SOURCE_BRANCH} \
         --build-arg SOURCE_COMMIT=${SOURCE_COMMIT} \
-        -f ${DOCKERFILE_PATH} -t ${DOCKER_REPO}:${PASSHPORT_VERSION} .
+        -f ${DOCKERFILE_PATH} -t ${DOCKER_REPO}:${PASSHPORT_VERSION}-${SOURCE_BRANCH} .
     if [ "${docker_build_latest}" = yes ]; then
         docker_build_latest=no
         docker tag ${DOCKER_REPO}:${PASSHPORT_VERSION}-${SOURCE_BRANCH} ${DOCKER_REPO}:latest
