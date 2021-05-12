@@ -49,7 +49,7 @@ These environment variables can be overriden to change the default behavior of t
 | `PASSHPORTD_LISTENING_IP`       | `0.0.0.0`                       | `192.168.1.10`                  | passhportd listening IP
 | `PASSHPORTD_MAXLOGSIZE`         | `5`                             | `10`                            | PaSSHport maximum log file size in MB
 | `PASSHPORTD_NODE_NAME`          | `passhport-node`                | `passhport`                     | Relaunch Node Name in case of HA
-| `PASSHPORTD_NOFIT_FROM`         | `passhport@bastion`             | `passhport@bastion.frx.yt`      | E-mail address sending PaSSHport notifications
+| `PASSHPORTD_NOTIF_FROM`         | `passhport@bastion`             | `passhport@bastion.frx.yt`      | E-mail address sending PaSSHport notifications
 | `PASSHPORTD_NOTIF_LOG_TYPE`     | `email`                         | `email`                         | Only email
 | `PASSHPORTD_NOTIF_SMTP`         | `127.0.0.1`                     | `smtp`                          | SMTP server for sending PaSSHport notifications
 | `PASSHPORTD_NOTIF_TO`           | `root, admin@passhport`         | `it@frx.yt`                     | Recipients of PaSSHport notifications
