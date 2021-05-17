@@ -70,9 +70,9 @@ if [ ! -f /etc/passhport/certs/cert.pem ]; then
         cp /home/passhport/passhport/tools/openssl-for-passhportd.cnf /etc/passhport/certs/cert.cnf
         sed -i '/^DNS./d' /etc/passhport/certs/cert.cnf
         echo 'DNS.1 = localhost' >> /etc/passhport/certs/cert.cnf
-        echo "DNS.2 = $(hostname -s)" > /etc/passhport/certs/cert.cnf
-        echo "DNS.3 = $(hostname)" > /etc/passhport/certs/cert.cnf
-        echo "DNS.4 = ${PASSHPORTD_HOSTNAME}" > /etc/passhport/certs/cert.cnf
+        echo "DNS.2 = $(hostname -s)" >> /etc/passhport/certs/cert.cnf
+        echo "DNS.3 = $(hostname)" >> /etc/passhport/certs/cert.cnf
+        echo "DNS.4 = ${PASSHPORTD_HOSTNAME}" >> /etc/passhport/certs/cert.cnf
     fi
     if [ ! -f /etc/passhport/certs/key.pem ]; then
         echo "Generating PaSSHport certicate key ..."
