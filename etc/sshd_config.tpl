@@ -19,6 +19,7 @@ HostKey /etc/ssh/keys/ssh_host_ecdsa_key
 HostKey /etc/ssh/keys/ssh_host_ed25519_key
 
 AllowUsers passhport
+AcceptEnv PASSHPORT_TARGET
 
 # Ciphers and keying
 #RekeyLimit default none
