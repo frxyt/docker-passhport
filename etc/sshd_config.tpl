@@ -26,7 +26,7 @@ AcceptEnv PASSHPORT_TARGET
 
 # Logging
 #SyslogFacility AUTH
-#LogLevel INFO
+LogLevel INFO
 
 # Authentication:
 
