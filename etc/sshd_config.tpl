@@ -81,7 +81,7 @@ ChallengeResponseAuthentication ${SSHD_PASSWD_AUTH}
 # If you just want the PAM account and session checks to run without
 # PAM authentication, then enable this but set PasswordAuthentication
 # and ChallengeResponseAuthentication to 'no'.
-UsePAM ${SSHD_PASSWD_AUTH}
+#UsePAM no
 
 #AllowAgentForwarding yes
 # Feel free to re-enable these if your use case requires them.
