@@ -60,7 +60,7 @@ PasswordAuthentication ${SSHD_PASSWD_AUTH}
 PermitEmptyPasswords no
 
 # Change to no to disable s/key passwords
-#ChallengeResponseAuthentication yes
+ChallengeResponseAuthentication ${SSHD_PASSWD_AUTH}
 
 # Kerberos options
 #KerberosAuthentication no
@@ -81,7 +81,7 @@ PermitEmptyPasswords no
 # If you just want the PAM account and session checks to run without
 # PAM authentication, then enable this but set PasswordAuthentication
 # and ChallengeResponseAuthentication to 'no'.
-#UsePAM no
+UsePAM ${SSHD_PASSWD_AUTH}
 
 #AllowAgentForwarding yes
 # Feel free to re-enable these if your use case requires them.
@@ -109,7 +109,7 @@ X11Forwarding no
 #Banner none
 
 # override default of no subsystems
-Subsystem	sftp	/usr/lib/ssh/sftp-server
+#Subsystem	sftp	/usr/lib/ssh/sftp-server
 
 # Example of overriding settings on a per-user basis
 #Match User anoncvs
