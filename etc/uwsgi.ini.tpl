@@ -6,7 +6,7 @@ uid = passhport
 gid = passhport
 
 master = true
-processes = 5
+processes = ${UWSGI_PROCESSES}
 pidfile = /run/uwsgi/passhport.pid
 
 shared-socket = ${PASSHPORTD_LISTENING_IP}:${PASSHPORTD_PORT}

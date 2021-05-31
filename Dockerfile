@@ -102,7 +102,8 @@ ENV FRX_DEBUG=0 \
     SSHD_PASSWD_AUTH=no \
     SSHD_PORT=22 \
     SSHD_PUBKEY_AUTH=yes \
-    TZ=Etc/UTC
+    TZ=Etc/UTC \
+    UWSGI_PROCESSES=5
 
 COPY Dockerfile     /home/passhport/
 COPY LICENSE        /home/passhport/

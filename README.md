@@ -62,6 +62,7 @@ These environment variables can be overriden to change the default behavior of t
 | `SSHD_PORT`                     | `22`                            | `2200`                          | SSHD listen port
 | `SSHD_PUBKEY_AUTH`              | `yes`                           | `yes` / `no`                    | Enable public key authentication in SSHD
 | `TZ`                            | `Etc/UTC`                       | `Europe/Paris`                  | Container time zone
+| `UWSGI_PROCESSES`               | `5`                             | `50`                            | Number of processes for PaSSHport spawned by uWSGI
 
 ## Build & Test
 
