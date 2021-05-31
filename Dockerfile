@@ -52,6 +52,7 @@ RUN set -ex; \
         libc-dev \
         libffi-dev \
         openssl-dev; \
+    pip3 install uwsgi; \
     su -c '~/passhport-run-env/bin/pip install -r requirements.txt' passhport; \
     cd /home/passhport; \
     rm -rf .cache .local; \
@@ -70,6 +71,7 @@ COPY bin/start                      /usr/local/bin/frx-start
 COPY etc/${PASSHPORT_VERSION}/*     /etc/passhport/
 COPY etc/sshd_config.tpl            /etc/ssh/
 COPY etc/supervisord.conf           /etc/supervisord.conf
+COPY etc/uwsgi.ini.tpl              /etc/passhport/
 
 ARG SOURCE_BRANCH=master
 ARG SOURCE_COMMIT=HEAD
@@ -78,7 +80,7 @@ RUN set -ex; \
     echo "[version: ${SOURCE_BRANCH}@${SOURCE_COMMIT}]" >> /etc/frx_version
 
 ENV FRX_DEBUG=0 \
-    FRX_LOG_PREFIX_MAXLEN=10 \
+    FRX_LOG_PREFIX_MAXLEN=5 \
     PASSHPORT_CERT_DAYS=365 \
     PASSHPORT_CERT_SUBJ='/C=FX/ST=None/L=None/O=None/OU=None/CN=localhost' \
     PASSHPORTD_DB_SALT=thepasshportsafeandsecuresalt \
@@ -92,7 +94,7 @@ ENV FRX_DEBUG=0 \
     PASSHPORTD_NOTIF_LOG_TYPE=email \
     PASSHPORTD_NOTIF_SMTP=127.0.0.1 \
     PASSHPORTD_NOTIF_TO='root, admin@passhport' \
-    PASSHPORTD_PORT=5000 \
+    PASSHPORTD_PORT=443 \
     PASSHPORTD_SCP_THROUGH_TARGET=False \
     PASSHPORTD_SSL=True \
     PASSHPORTD_UNIQ_TARGETS_ID=True \
@@ -107,7 +109,7 @@ COPY LICENSE        /home/passhport/
 COPY README.md      /home/passhport/
 
 WORKDIR /home/passhport
-EXPOSE 22 5000
+EXPOSE 22 443
 HEALTHCHECK --interval=15s --timeout=5s --start-period=1m --retries=3 CMD ["/usr/local/bin/frx-healthcheck"]
 ENTRYPOINT ["/usr/local/bin/frx-entrypoint"]
 CMD ["/usr/local/bin/frx-start"]

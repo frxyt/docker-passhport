@@ -53,7 +53,7 @@ These environment variables can be overriden to change the default behavior of t
 | `PASSHPORTD_NOTIF_LOG_TYPE`     | `email`                         | `email`                         | Only email
 | `PASSHPORTD_NOTIF_SMTP`         | `127.0.0.1`                     | `smtp`                          | SMTP server for sending PaSSHport notifications
 | `PASSHPORTD_NOTIF_TO`           | `root, admin@passhport`         | `it@frx.yt`                     | Recipients of PaSSHport notifications
-| `PASSHPORTD_PORT`               | `5000`                          | `5000`                          | PaSSHport admin port
+| `PASSHPORTD_PORT`               | `443`                           | `5000`                          | PaSSHport admin port
 | `PASSHPORTD_SCP_THROUGH_TARGET` | `False`                         | `True` / `False`                | Allow to directly up/download file to a server behind a target via scp
 | `PASSHPORTD_SSL`                | `True`                          | `True` / `False`                | Use SSL for PaSSHport
 | `PASSHPORTD_UNIQ_TARGETS_ID`    | `True`                          | `True` / `False`                | Targets identifiants are the same for every user
@@ -67,7 +67,7 @@ These environment variables can be overriden to change the default behavior of t
 
 ```sh
 docker build -f Dockerfile -t frxyt/passhport:latest .
-docker run --rm -d --name  frxyt/passhport:latest
+docker run --rm -d --name passhport frxyt/passhport:latest
 docker exec -itu passhport passhport bash
 docker stop passhport
 ```

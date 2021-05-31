@@ -125,6 +125,6 @@ done
 
 # Start supervisor
 echo "Starting PaSSHport ..."
-mkdir -p /run/sshd /var/log/supervisor /var/log/passhport
+mkdir -p /run/sshd /run/uwsgi /var/log/supervisor /var/log/passhport
 chown passhport:passhport -R /var/log/passhport
 /usr/bin/supervisord -c /etc/supervisord.conf
